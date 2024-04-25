@@ -30,3 +30,10 @@ nome_tabela X nome_tabela
 
 ## JOIN
 SIGMA nome_coluna = nome_coluna (nome_tabela X nome_tabela)
+
+-- Aula 08
+
+## Assinatura - funcao/metodo ou procedimento com suas declarações de parametro(nome metodo e seus parametros)
+
+
+
