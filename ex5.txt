@@ -1,0 +1,50 @@
+Exercício 01:
+Conforme as tabelas já mapeadas, cliente, produto, pedido e movimento, crie dois objetos
+abaixo relacionados, para atender ao solicitado:
+
+• 1ª) Monte uma visão chamada de v_TotalPedido, no qual retorne o total, em valores,
+de pedidos feitos, por cliente e pedido. Para isso deve ser lida a coluna total_mov da
+tabela de movimento.
+
+O Resultado da view deve ser a projeção : cod_cli, nro_ped, soma(total_mov)
+
+Resposta:
+
+CREATE OR REPLACE VIEW v_TotalPedido AS
+SELECT 
+CLI.COD_CLI, 
+PED.NRO_PED,
+SUM(MOV.TOTAL_MOV) TOTAL_MOV
+FROM MOVIMENTO MOV
+INNER JOIN PEDIDO PED ON PED.NRO_PED = MOV.NRO_PED
+INNER JOIN CLIENTE CLI ON CLI.COD_CLI = PED.COD_CLI
+GROUP BY
+CLI.COD_CLI, 
+PED.NRO_PED;
+
+• 2º) Monte um procedimento chamado de atualizarTotalPedido (função de escrita) no
+qual receba como parâmetro, o código do cliente, tipo char(10), e atualize os pedidos
+(coluna total_ped) apenas do respectivo cliente enviado como parâmetro.
+
+Resposta:
+CREATE OR REPLACE FUNCTION atualizarTotalPedido(
+    char(10),
+	char(10)
+) RETURNS SETOF PEDIDO AS
+$$
+
+UPDATE PEDIDO
+SET TOTAL_PED = (SELECT TOTAL_MOV FROM v_TotalPedido WHERE COD_CLI = $1)
+WHERE COD_CLI = $1
+AND NRO_PED = $2;
+
+--TERMINO DA FUNÇÃO
+SELECT * 
+FROM PEDIDO
+WHERE COD_CLI = $1
+AND NRO_PED = $2;
+
+$$
+LANGUAGE SQL;
+
+DICA: use o comando de UPDATE com a view. Cuide para que apenas os pedidos do cliente informado no parâmetro da função, seja alterado.
