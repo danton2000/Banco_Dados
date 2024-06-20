@@ -1,0 +1,53 @@
+SELECT * FROM EX_MOTORISTA;
+
+DROP FUNCTION FN_TESTE_VELOCIDADE_MULTA()
+
+CREATE OR REPLACE FUNCTION FN_TESTE_VELOCIDADE_MULTA(
+	CHAR(100),
+	DECIMAL(8,2)
+) RETURNS VOID AS
+$$
+<<bloco_externo>> --bloco nomeado
+
+DECLARE
+	-- Preparando as variaveis
+	_cnh CHAR(100) := $1;
+    _velocidade DECIMAL(8,2) := $2;
+	_resultado CHAR(100);
+BEGIN
+    RAISE NOTICE 'Quantidade aqui vale: %', _velocidade; --30
+	
+	--VERIFICANDO SE O MOTORISTA EXISTE
+	-- EXECUTA O SELECT MAS DESCARTA O RESULTADO
+	PERFORM * FROM EX_MOTORISTA WHERE CNH = _cnh;
+	-- VARIÁVEL QUE É LIGADA SE O COMANDO ANTERIOR (SELECT, UPDATE, INSERT, DELETE) AFETOU AO MENOS UMA LINHA
+	-- VALIDA SE TEM LINHAS OU NÃO NA TABELA
+	IF FOUND THEN
+		RAISE NOTICE 'MOTORISTA ENCONTRADO NO SISTEMA';
+		
+		-- VERIFICACAO DA VELOCIDADE PARA APLICAR A MULTA AO MOTORISTA
+		IF _velocidade >= 80.01 and _velocidade <= 110 THEN
+			_resultado := 'Multado';
+			
+		ELSIF  _velocidade >= 110.01 and _velocidade <= 140 THEN
+			_resultado := 'Multado';
+			
+		ELSIF _velocidade > 140 THEN
+			_resultado := 'Multado';
+			
+		ELSE
+			_resultado := 'Velocidade ok';
+		END IF;
+
+		RAISE NOTICE 'Resultado: %', _resultado;
+	ELSE
+		RAISE NOTICE 'MOTORISTA NÃO ENCONTRADO NO SISTEMA';
+	END IF;
+    
+RETURN;
+
+END;
+
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM FN_TESTE_VELOCIDADE_MULTA('123AB', 120.2)
