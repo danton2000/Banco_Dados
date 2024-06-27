@@ -57,7 +57,7 @@ begin -- Escreva aqui
 -- 1º o cálculo da velocidade calculada
 -- 2º teste os intervalos para ver se o motorista tem multa e se tiver --    insere na tabela ex_multa
 -- 3º busque o nome do motorista –
-- 4º some o total de pontos do motorista
+-- 4º some o total de pontos do motorista
 -- 5º retorne a mensagem
 end;
 ' language 'plpgsql';
